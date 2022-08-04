@@ -32,25 +32,34 @@ class Store(Storage):
     def add(self, name, count):
         if name in self.__items.keys():
             if self.get_free_space() >= count:
+                print('Товар добавлен')
                 self.__items[name] += count
                 return True
             else:
-                print('Недостаточно места')
+                if isinstance(self, Shop):
+                    print('Недостаточно места в магазине!')
+                elif isinstance(self, Store):
+                    print('Недостаточно места на складе!')
                 return False
         else:
             if self.get_free_space() >= count:
+                print('Товар добавле!')
                 self.__items[name] = count
                 return True
             else:
-                print("Недостаточно место")
+                if isinstance(self, Shop):
+                    print('Недостаточно места в магазине!')
+                elif isinstance(self, Store):
+                    print('Недостаточно места на складе!')
                 return False
 
     def remove(self, name, count):
         if self.__items[name] >= count:
+            print('Нужное количество есть на складе!')
             self.__items[name] -= count
             return True
         else:
-            print('Недостаточно места')
+            print('Недостаточно места на складе!')
             return False
 
     def get_free_space(self):
@@ -97,7 +106,7 @@ class Request:
             self.__from = req_list[4]
             self.__to = None
         elif action == 'Привезти':
-            self.__from = req_list[6]
+            self.__from = req_list[4]
             self.__to = None
 
     def move(self):
@@ -128,23 +137,15 @@ while True:
         break
 
     else:
-        req = Request(user_text)
-        req.move()
-test_text1 = 'Доставить 15 oneplus из storage_1 в shop_1'
-# test_text2 = 'Забрать 2 iphone из shop_1'
-# test_text3 = 'Привезти 2 iphone из shop_1'
-req = Request(test_text1)
-req.move()
-print(storage_1)
+        try:
+            req = Request(user_text)
+            req.move()
+        except Exception as e:
+            print(f'Произошла ошибка {e}')
 
-# storage1 = Shop(items={'iphone': 5, 'xiaomi': 5, 'xiaomi1': 5, 'xiaomi2': 2, 'xiaomi3': 1})
-#
-# storage1.add('tablet', 3)
-# print(storage1)
-# print(storage1.get_free_space())
 
-# storage1.remove('xiaomi', 10)
-# print(storage1.get_free_space())
-# print(storage1.get_items())
-# print(storage1.get_unique_items_count())
-# print(storage1)
+
+
+#  Доставить 5 xiaomi из storage_1 to storage_2
+#  Забрать 3 xiaomi in shop_1
+#  Привезти 3 xiaomi in shop_2
