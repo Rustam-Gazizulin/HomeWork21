@@ -33,22 +33,25 @@ class Store(Storage):
         if name in self.__items.keys():
             if self.get_free_space() >= count:
                 self.__items[name] += count
+                return True
             else:
                 print('Недостаточно места')
-                return 'Insufficient_space'
+                return False
         else:
             if self.get_free_space() >= count:
                 self.__items[name] = count
+                return True
             else:
-                print("ываываы")
-                return 'Insufficient_space'
+                print("Недостаточно место")
+                return False
 
     def remove(self, name, count):
-        if self.__items[name] > count:
+        if self.__items[name] >= count:
             self.__items[name] -= count
+            return True
         else:
             print('Недостаточно места')
-            return 'Not enough product in stock'
+            return False
 
     def get_free_space(self):
         current_space = 0
@@ -76,9 +79,10 @@ class Shop(Store):
     def add(self, name, count):
         if self.get_unique_items_count() >= 5:
             print('Лимит превышен')
-            return 'The limit of unique products has been exceeded!'
+            return False
         else:
             super().add(name, count)
+
 
 class Request:
     def __init__(self, request_str):
@@ -97,10 +101,41 @@ class Request:
             self.__to = None
 
     def move(self):
-        if self.__to:
-            self.__to.add(self.__item, self.__count)
-        if self.__from:
-            self.__from.remove(self.__item, self.__count)
+        if self.__to and self.__from:
+            if eval(self.__to).add(self.__item, self.__count):
+                eval(self.__from).remove(self.__item, self.__count)
+
+        elif self.__to:
+            eval(self.__to).add(self.__item, self.__count)
+        elif self.__from:
+            eval(self.__from).remove(self.__item, self.__count)
+
+
+storage_1 = Store(items={'iphone': 5, 'xiaomi': 10, 'oneplus': 15, 'samsung': 5, 'oppo': 5, 'asus': 1})
+storage_2 = Store(items={'iphone': 10, 'xiaomi': 20, 'oneplus': 30, 'samsung': 10})
+shop_1 = Shop(items={'iphone': 5, 'xiaomi': 10})
+
+
+while True:
+    print('Актуальные остатки на складе')
+    print(f'{"-" * 10}\nstorage_1:\n{"-" * 10}\n{storage_1}')
+    print(f'{"-" * 10}\nstorage_2:\n{"-" * 10}\n{storage_2}')
+    print(f'{"-" * 10}\nshop_1:\n{"-" * 10}\n{shop_1}')
+    user_text = input('Enter the command:\n')
+
+
+    if user_text == 'stop':
+        break
+
+    else:
+        req = Request(user_text)
+        req.move()
+test_text1 = 'Доставить 15 oneplus из storage_1 в shop_1'
+# test_text2 = 'Забрать 2 iphone из shop_1'
+# test_text3 = 'Привезти 2 iphone из shop_1'
+req = Request(test_text1)
+req.move()
+print(storage_1)
 
 # storage1 = Shop(items={'iphone': 5, 'xiaomi': 5, 'xiaomi1': 5, 'xiaomi2': 2, 'xiaomi3': 1})
 #
