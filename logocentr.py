@@ -43,15 +43,12 @@ class Store(Storage):
                 print("ываываы")
                 return 'Insufficient_space'
 
-
-
     def remove(self, name, count):
         if self.__items[name] > count:
             self.__items[name] -= count
         else:
             print('Недостаточно места')
             return 'Not enough product in stock'
-
 
     def get_free_space(self):
         current_space = 0
@@ -62,15 +59,14 @@ class Store(Storage):
     def get_items(self):
         return self.__items
 
-
     def get_unique_items_count(self):
         return len(self.__items.keys())
 
     def __str__(self):
-        assortiment = ''
+        st = ''
         for key, value in self.__items.items():
-            assortiment += f'{key}: {value}\n'
-        return assortiment
+            st += f'{key}: {value}\n'
+        return st
 
 
 class Shop(Store):
@@ -78,17 +74,37 @@ class Shop(Store):
         super().__init__(items, capacity)
 
     def add(self, name, count):
-        if self.get_unique_items_count() > 5:
+        if self.get_unique_items_count() >= 5:
             print('Лимит превышен')
             return 'The limit of unique products has been exceeded!'
         else:
             super().add(name, count)
 
+class Request:
+    def __init__(self, request_str):
+        req_list = request_str.split()
+        action = req_list[0]
+        self.__count = int(req_list[1])
+        self.__item = req_list[2]
+        if action == 'Доставить':
+            self.__from = req_list[4]
+            self.__to = req_list[6]
+        elif action == 'Забрать':
+            self.__from = req_list[4]
+            self.__to = None
+        elif action == 'Привезти':
+            self.__from = req_list[6]
+            self.__to = None
 
+    def move(self):
+        if self.__to:
+            self.__to.add(self.__item, self.__count)
+        if self.__from:
+            self.__from.remove(self.__item, self.__count)
 
-storage1 = Shop(items={'iphone': 10, 'xiaomi': 6})
-
-storage1.add('tablet', 4)
+# storage1 = Shop(items={'iphone': 5, 'xiaomi': 5, 'xiaomi1': 5, 'xiaomi2': 2, 'xiaomi3': 1})
+#
+# storage1.add('tablet', 3)
 # print(storage1)
 # print(storage1.get_free_space())
 
@@ -97,6 +113,3 @@ storage1.add('tablet', 4)
 # print(storage1.get_items())
 # print(storage1.get_unique_items_count())
 # print(storage1)
-
-
-
