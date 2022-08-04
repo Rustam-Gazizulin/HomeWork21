@@ -34,10 +34,14 @@ class Store(Storage):
             if self.get_free_space() >= count:
                 self.__items[name] += count
             else:
+                print('Недостаточно места')
                 return 'Insufficient_space'
         else:
             if self.get_free_space() >= count:
                 self.__items[name] = count
+            else:
+                print("ываываы")
+                return 'Insufficient_space'
 
 
 
@@ -45,6 +49,7 @@ class Store(Storage):
         if self.__items[name] > count:
             self.__items[name] -= count
         else:
+            print('Недостаточно места')
             return 'Not enough product in stock'
 
 
@@ -68,16 +73,30 @@ class Store(Storage):
         return assortiment
 
 
+class Shop(Store):
+    def __init__(self, items, capacity=20):
+        super().__init__(items, capacity)
 
-storage1 = Store(items={'iphone': 10, 'xiaomi': 20}, capacity=100)
-print(storage1)
-print(storage1.get_free_space())
-storage1.add('tablet', 5)
-storage1.remove('xiaomi', 10)
-print(storage1.get_free_space())
-print(storage1.get_items())
-print(storage1.get_unique_items_count())
-print(storage1)
+    def add(self, name, count):
+        if self.get_unique_items_count() > 5:
+            print('Лимит превышен')
+            return 'The limit of unique products has been exceeded!'
+        else:
+            super().add(name, count)
+
+
+
+storage1 = Shop(items={'iphone': 10, 'xiaomi': 6})
+
+storage1.add('tablet', 4)
+# print(storage1)
+# print(storage1.get_free_space())
+
+# storage1.remove('xiaomi', 10)
+# print(storage1.get_free_space())
+# print(storage1.get_items())
+# print(storage1.get_unique_items_count())
+# print(storage1)
 
 
 
